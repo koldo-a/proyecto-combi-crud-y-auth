@@ -44,11 +44,12 @@ def login():
     cursor = db.cursor()
     cursor.execute("SELECT * FROM users WHERE email_users=%s", (email,))
     result = cursor.fetchone()
-    
     if result is None:
         return jsonify({'message': 'Usuario no encontrado'}), 404
-    
-    return jsonify({'message': 'Inicio de sesión exitoso'}), 200
+    idusers = result[0]
+    success_message = f'Inicio de sesión exitoso para el usuario con id: {idusers} y el email:{email}'
+    # Retornar el mensaje de éxito junto con el id_users en la respuesta JSON
+    return jsonify({'message': success_message }), 200
 
 # Ruta para el cierre de sesión
 @app.route('/logout', methods=['GET'])
@@ -105,6 +106,34 @@ def handle_items():
             return jsonify({'message': 'Item added successfully'})
         else:
             return jsonify({'error': 'Invalid item'})
+
+#----------------------------------------------------------------
+# Rutas para las operaciones CRUD
+@app.route('/users', methods=['GET'])
+def handle_users():
+    if request.method == 'GET':
+        # Consulta SQL para obtener todos los registros de la tabla
+        query = 'SELECT * FROM users ORDER BY idusers'
+
+        # Ejecutar la consulta
+        cursor = db.cursor()
+        cursor.execute(query)
+
+        # Obtener los resultados y construir la lista de elementos
+        users = []
+        for u in cursor.fetchall():
+            u_data = {
+                'idusers': u[0],
+                'name': u[1]
+            }
+            users.append(u_data)
+
+        return jsonify(users)
+
+
+#----------------------------------------------------------------
+
+
 
 @app.route('/items/<int:index>', methods=['DELETE', 'PUT'])
 def handle_item_by_index(index):
