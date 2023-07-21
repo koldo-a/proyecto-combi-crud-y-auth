@@ -1,0 +1,82 @@
+// Estilos generales
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f0f0f0;
+}
+
+.titulo {
+  font-size: 24px;
+  text-decoration: underline;
+}
+.titulo1 {
+  padding: 10px;
+  line-height: 2em;
+  background-color: lightgray;
+  
+}
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.subcontainer {
+  display: flex;
+  justify-content: space-around;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+input[type="text"] {
+  width: 30%;
+  padding: 10px;
+  margin-bottom: 10px;
+  font-size: 16px;
+  &:hover {
+    border: 2px solid #002fff;
+    border-radius: 5px;
+  }
+}
+
+button {
+  background-color: #4caf50;
+  color: #fff;
+  border: 1px solid black;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  background-color: #fff;
+  padding: 10px;
+  margin-bottom: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+}
+
+li button {
+  margin-left: 10px;
+}
+
+li button:hover {
+  background-color: #e53935;
+}
+
+.button-edit {
+  &:hover {background-color: rgb(0, 26, 255);}
+}
+// Otros estilos personalizados aquí
