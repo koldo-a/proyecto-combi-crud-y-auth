@@ -5,11 +5,15 @@ import './styles/App.scss';
 
 const App = () => {
   const [email, setEmail] = useState('');
+  const [idusers, setIdUsers] = useState(null); // Nuevo estado para almacenar el id del usuario
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [items, setItems] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const [editItemId, setEditItemId] = useState(null);
+  const [loginMessage, setLoginMessage] = useState('');
+  const [registerMessage, setregisterMessage] = useState('');
+
 
   useEffect(() => {
     // Verificar el estado de autenticación al cargar el componente
@@ -28,32 +32,55 @@ const App = () => {
     checkAuthentication(); */
   }, []);
 
-  const fetchItems = async () => {
+    const fetchItems = async () => {
     try {
       const response = await axios.get('http://localhost:5000/items');
       setItems(response.data);
     } catch (error) {
       console.error('Error fetching items:', error);
     }
-  };
-
+  }; 
+/*    const fetchItems = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/items');
+      const itemsWithUserEmail = await Promise.all(
+        response.data.map(async (item) => {
+          // Obtener el email del usuario correspondiente al itemiduser
+          const userResponse = await axios.get(`http://localhost:5000/user/${item.itemiduser}`);
+          const userEmail = userResponse.data.email_users;
+          
+          return {
+            ...item,
+            email: userEmail,
+          };
+        })
+      );
+      setItems(itemsWithUserEmail);
+    } catch (error) {
+      console.error('Error fetching items:', error);
+    }
+  };  */
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
   };
   
   const handleRegister = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/register', { email });
-      console.log(response.data.message);
+      const response = await axios.post('http://localhost:5000/register', { email: email });
+      if (response.status === 200) {
+        setregisterMessage(response.data.message); // Actualizar el mensaje de inicio de sesión en el estado
+      }
     } catch (error) {
-      console.error(error.response.data.message);
+        setregisterMessage(error.response.data.message); // Actualizar el mensaje de error en caso de error de inicio de sesión
+        console.error(error.response.data.message);
     }
   };
+
 
   const handleAddItem = async () => {
     if (inputValue) {
       try {
-        const response = await axios.post('http://localhost:5000/items', { name: inputValue });
+        const response = await axios.post('http://localhost:5000/items', { name: inputValue, itemiduser: idusers });
         setInputValue('');
         fetchItems();
         console.log(response.data.message); // Muestra el mensaje del servidor en la consola
@@ -88,11 +115,15 @@ const App = () => {
   const handleLogin = async () => {
     try {
       const response = await axios.post('http://localhost:5000/login', { email: email });
-      console.log(response.data.message);
-      setIsLoggedIn(true); // Establecer el estado isLoggedIn a true cuando se inicia sesión correctamente
-      fetchItems(); // Cargar los elementos desde el servidor después de iniciar sesión
+      if (response.status === 200) {
+        setLoginMessage(response.data.message); // Actualizar el mensaje de inicio de sesión en el estado
+        setIsLoggedIn(true);
+        setIdUsers(response.data.idusers); // Almacena el id del usuario en el estado
+        fetchItems();
+      }
     } catch (error) {
-      console.error(error.response.data.message);
+        setLoginMessage(error.response.data.message); // Actualizar el mensaje de error en caso de error de inicio de sesión
+        console.error(error.response.data.message);
     }
   };
 
@@ -129,7 +160,7 @@ const App = () => {
           <ul>
             {items.map((item) => (
               <li key={item.id}>
-                {item.id} - {item.name}
+                {item.id} - {item.name} by user: {item.itemiduser}
                 <button className='button-edit' onClick={() => handleEditItem(item.id)}>Edit</button>
                 <button onClick={() => handleDeleteItem(item.id)}>Delete</button>
               </li>
@@ -148,7 +179,11 @@ const App = () => {
           <button onClick={handleRegister}>Registrar</button>
         </div>
       )}
+    <div>{loginMessage}</div>
+    <div>{registerMessage}</div>
+
     </div>
+
   );
 };
 

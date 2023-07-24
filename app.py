@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import mysql.connector
+import pdb
+
 
 app = Flask(__name__)
 CORS(app)
@@ -45,11 +47,13 @@ def login():
     cursor.execute("SELECT * FROM users1 WHERE email_users=%s", (email,))
     result = cursor.fetchone()
     if result is None:
-        return jsonify({'message': 'Usuario no encontrado'}), 404
-    idusers = result[0]
-    success_message = f'Inicio de sesión exitoso para el usuario con id: {idusers} y el email:{email}'
-    # Retornar el mensaje de éxito junto con el id_users en la respuesta JSON
-    return jsonify({'message': success_message }), 200
+        unsuccess_message = f'Usuario con el email: {email} no se ha encontrado'
+        return jsonify({'message': unsuccess_message}), 404
+    else: 
+        idusers = result[0]
+        success_message = f'Inicio de sesión exitoso para el usuario con id: {idusers} y el email:{email}'
+        # Retornar el mensaje de éxito junto con el idusers en la respuesta JSON
+        return jsonify({'message': success_message, 'idusers': idusers }), 200
 
 # Ruta para el cierre de sesión
 @app.route('/logout', methods=['GET'])
@@ -83,30 +87,36 @@ def handle_items():
         for item in cursor.fetchall():
             item_data = {
                 'id': item[0],
-                'name': item[1]
+                'name': item[1],
+                'itemiduser': item[2]
             }
             items.append(item_data)
 
         return jsonify(items)
 
     elif request.method == 'POST':
-        item = request.json.get('name')
-        if item:
-            # Consulta SQL para insertar un nuevo registro en la tabla
-            query = 'INSERT INTO items1 (name) VALUES (%s)'
+        data = request.get_json()
+        item = data.get('name')
+        itemiduser = data.get('itemiduser')  # Obtener el id del usuario del cuerpo de la solicitud
 
-            # Datos del nuevo elemento
-            item_data = (item,)
+        if item and itemiduser:
+            try:
+                # Consulta SQL para insertar un nuevo registro en la tabla
+                query = 'INSERT INTO items1 (name, itemiduser) VALUES (%s, %s)'
 
-            # Ejecutar la consulta
-            cursor = db.cursor()
-            cursor.execute(query, item_data)
-            db.commit()
+                # Datos del nuevo elemento
+                item_data = (item, itemiduser)
 
-            return jsonify({'message': 'Item added successfully'})
+                # Ejecutar la consulta
+                cursor = db.cursor()
+                cursor.execute(query, item_data)
+                db.commit()
+
+                return jsonify({'message': 'Item added successfully'})
+            except Exception as e:
+                return jsonify({'error': str(e)}), 500
         else:
-            return jsonify({'error': 'Invalid item'})
-
+            return jsonify({'error': 'Invalid item'}), 400
 #----------------------------------------------------------------
 # Rutas para las operaciones CRUD
 @app.route('/users', methods=['GET'])
@@ -168,6 +178,19 @@ def handle_item_by_index(index):
             return jsonify({'message': 'Item edited successfully'})
         else:
             return jsonify({'error': 'Invalid item'})
+
+@app.route('/user/<int:user_id>', methods=['GET'])
+def get_user_email(user_id):
+    cursor = db.cursor()
+    cursor.execute("SELECT email_users FROM users1 WHERE idusers=%s", (user_id,))
+    result = cursor.fetchone()
+
+    if result is not None:
+        email = result[0]
+        return jsonify({'email_users': email}), 200
+    else:
+        return jsonify({'error': 'User not found'}), 404
+
 
 if __name__ == '__main__':
     app.run(debug=True)
