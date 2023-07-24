@@ -32,15 +32,15 @@ const App = () => {
     checkAuthentication(); */
   }, []);
 
-    const fetchItems = async () => {
+     const fetchItems = async () => {
     try {
       const response = await axios.get('http://localhost:5000/items');
       setItems(response.data);
     } catch (error) {
       console.error('Error fetching items:', error);
     }
-  }; 
-/*    const fetchItems = async () => {
+  };  
+/*     const fetchItems = async () => {
     try {
       const response = await axios.get('http://localhost:5000/items');
       const itemsWithUserEmail = await Promise.all(
@@ -55,11 +55,14 @@ const App = () => {
           };
         })
       );
+
+      console.log('itemsWithUserEmail:', itemsWithUserEmail);
+
       setItems(itemsWithUserEmail);
     } catch (error) {
       console.error('Error fetching items:', error);
     }
-  };  */
+  };   */
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
   };

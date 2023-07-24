@@ -181,16 +181,19 @@ def handle_item_by_index(index):
 
 @app.route('/user/<int:user_id>', methods=['GET'])
 def get_user_email(user_id):
-    cursor = db.cursor()
-    cursor.execute("SELECT email_users FROM users1 WHERE idusers=%s", (user_id,))
-    result = cursor.fetchone()
+    try:
+        cursor = db.cursor()
+        cursor.execute("SELECT email_users FROM users1 WHERE idusers=%s", (user_id,))
+        result = cursor.fetchone()
 
-    if result is not None:
-        email = result[0]
-        return jsonify({'email_users': email}), 200
-    else:
-        return jsonify({'error': 'User not found'}), 404
-
+        if result is not None:
+            email = result[0]
+            return jsonify({'email_users': email}), 200
+        else:
+            return jsonify({'error': 'User not found'}), 404
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
