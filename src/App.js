@@ -40,13 +40,23 @@ const App = () => {
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
   };
+  
+  const handleRegister = async () => {
+    try {
+      const response = await axios.post('http://localhost:5000/register', { email });
+      console.log(response.data.message);
+    } catch (error) {
+      console.error(error.response.data.message);
+    }
+  };
 
   const handleAddItem = async () => {
     if (inputValue) {
       try {
-        await axios.post('http://localhost:5000/items', { name: inputValue });
+        const response = await axios.post('http://localhost:5000/items', { name: inputValue });
         setInputValue('');
         fetchItems();
+        console.log(response.data.message); // Muestra el mensaje del servidor en la consola
       } catch (error) {
         console.error('Error adding item:', error);
       }
@@ -67,8 +77,9 @@ const App = () => {
 
   const handleDeleteItem = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/items/${id}`);
+      const response = await axios.delete(`http://localhost:5000/items/${id}`);
       fetchItems();
+      console.log(response.data.message); // Muestra el mensaje del servidor en la consola
     } catch (error) {
       console.error('Error deleting item:', error);
     }
@@ -134,6 +145,7 @@ const App = () => {
             placeholder="Correo electrónico"
           />
           <button onClick={handleLogin}>Iniciar sesión</button>
+          <button onClick={handleRegister}>Registrar</button>
         </div>
       )}
     </div>

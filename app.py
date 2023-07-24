@@ -22,14 +22,14 @@ def register():
     
     # Verifica si el usuario ya está registrado
     cursor = db.cursor()
-    cursor.execute("SELECT * FROM users WHERE email_users=%s", (email,))
+    cursor.execute("SELECT * FROM users1 WHERE email_users=%s", (email,))
     result = cursor.fetchone()
     
     if result is not None:
         return jsonify({'message': 'El usuario ya está registrado'}), 400
     
     # Inserta el nuevo usuario en la base de datos
-    cursor.execute("INSERT INTO users (email_users) VALUES (%s)", (email,))
+    cursor.execute("INSERT INTO users1 (email_users) VALUES (%s)", (email,))
     db.commit()
     
     return jsonify({'message': 'Registro exitoso'}), 200
@@ -42,7 +42,7 @@ def login():
     
     # Verifica si el usuario existe en la base de datos
     cursor = db.cursor()
-    cursor.execute("SELECT * FROM users WHERE email_users=%s", (email,))
+    cursor.execute("SELECT * FROM users1 WHERE email_users=%s", (email,))
     result = cursor.fetchone()
     if result is None:
         return jsonify({'message': 'Usuario no encontrado'}), 404
@@ -72,7 +72,7 @@ def check_authentication():
 def handle_items():
     if request.method == 'GET':
         # Consulta SQL para obtener todos los registros de la tabla
-        query = 'SELECT * FROM items'
+        query = 'SELECT * FROM items1'
 
         # Ejecutar la consulta
         cursor = db.cursor()
@@ -93,7 +93,7 @@ def handle_items():
         item = request.json.get('name')
         if item:
             # Consulta SQL para insertar un nuevo registro en la tabla
-            query = 'INSERT INTO items (name) VALUES (%s)'
+            query = 'INSERT INTO items1 (name) VALUES (%s)'
 
             # Datos del nuevo elemento
             item_data = (item,)
@@ -113,7 +113,7 @@ def handle_items():
 def handle_users():
     if request.method == 'GET':
         # Consulta SQL para obtener todos los registros de la tabla
-        query = 'SELECT * FROM users ORDER BY idusers'
+        query = 'SELECT * FROM users1 ORDER BY idusers'
 
         # Ejecutar la consulta
         cursor = db.cursor()
@@ -139,7 +139,7 @@ def handle_users():
 def handle_item_by_index(index):
     if request.method == 'DELETE':
         # Consulta SQL para eliminar un registro de la tabla
-        query = 'DELETE FROM items WHERE id = %s'
+        query = 'DELETE FROM items1 WHERE id = %s'
 
         # Datos del índice del elemento a eliminar
         item_index = (index,)
@@ -155,7 +155,7 @@ def handle_item_by_index(index):
         new_name = request.json.get('name')
         if new_name:
             # Consulta SQL para actualizar un registro de la tabla
-            query = 'UPDATE items SET name = %s WHERE id = %s'
+            query = 'UPDATE items1 SET name = %s WHERE id = %s'
 
             # Datos del nuevo nombre y el índice del elemento a editar
             item_data = (new_name, index)
