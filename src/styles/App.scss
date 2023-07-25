@@ -68,6 +68,11 @@ li {
   align-items: center;
 }
 
+.by-user {
+  color: #002fff;
+  font-size: small;
+}
+
 li button {
   margin-left: 10px;
 }
@@ -81,8 +86,26 @@ li button:hover {
 }
 // Otros estilos personalizados aquí
 
-.login-message {
-  font-size: 40px;
+.login-msg {
+  font-size: 2em;
   margin-top: 40px;
-  color: red;
+  color: rgb(161, 16, 16);
+  opacity: 1; /* Inicialmente, el mensaje no es visible */
+  transition: opacity 5s ease-in-out; /* Añade una transición para la propiedad opacity */
+}
+
+.login-msg.visible {
+  opacity: 0; /* Cuando la clase "visible" está presente, se mostrará el mensaje con una animación de desvanecimiento */
+}
+
+.regis-msg {
+  font-size: 2em;
+  margin-top: 40px;
+  color: rgb(161, 16, 16);
+  opacity: 1; /* Inicialmente, el mensaje no es visible */
+  transition: opacity 5s ease-in-out; /* Añade una transición para la propiedad opacity */
+}
+
+.regis-msg.visible {
+  opacity: 0; /* Cuando la clase "visible" está presente, se mostrará el mensaje con una animación de desvanecimiento */
 }

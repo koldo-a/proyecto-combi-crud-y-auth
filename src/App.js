@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Importa el hook useHistory
 
 import './styles/App.scss';
 
@@ -13,6 +14,7 @@ const App = () => {
   const [editItemId, setEditItemId] = useState(null);
   const [loginMessage, setLoginMessage] = useState('');
   const [registerMessage, setregisterMessage] = useState('');
+  const navigate = useNavigate(); // Obtén el objeto de historial
 
 
   useEffect(() => {
@@ -32,14 +34,32 @@ const App = () => {
     checkAuthentication(); */
   }, []);
 
-     const fetchItems = async () => {
-    try {
-      const response = await axios.get('http://localhost:5000/items');
-      setItems(response.data);
-    } catch (error) {
-      console.error('Error fetching items:', error);
-    }
-  };  
+    // Función para mostrar el mensaje de inicio de sesión y luego ocultarlo después de 2 segundos
+const showLoginMessage = (message) => {
+  setLoginMessage(message);
+
+  setTimeout(() => {
+    setLoginMessage('');
+  }, 5000); // 5000 milisegundos 
+};
+const showregisterMessage = (message) => {
+  setregisterMessage(message);
+
+  setTimeout(() => {
+    setregisterMessage('');
+  }, 5000); // 5000 milisegundos
+};
+
+  const fetchItems = async () => {
+  try {
+    const response = await axios.get('http://localhost:5000/items');
+    setItems(response.data.filter(item => item.itemiduser === idusers));
+    console.log(response.data);
+    console.log(email)
+  } catch (error) {
+    console.error('Error fetching items:', error);
+  }
+};  
 /*     const fetchItems = async () => {
     try {
       const response = await axios.get('http://localhost:5000/items');
@@ -71,10 +91,11 @@ const App = () => {
     try {
       const response = await axios.post('http://localhost:5000/register', { email: email });
       if (response.status === 200) {
-        setregisterMessage(response.data.message); // Actualizar el mensaje de inicio de sesión en el estado
+        showregisterMessage(response.data.message); // Actualizar el mensaje de inicio de sesión en el estado
+        setEmail('');
       }
     } catch (error) {
-        setregisterMessage(error.response.data.message); // Actualizar el mensaje de error en caso de error de inicio de sesión
+        showregisterMessage(error.response.data.message); // Actualizar el mensaje de error en caso de error de inicio de sesión
         console.error(error.response.data.message);
     }
   };
@@ -97,8 +118,9 @@ const App = () => {
     const newName = prompt('Enter the new name');
     if (newName) {
       try {
-        axios.put(`http://localhost:5000/items/${id}`, { name: newName });
-        fetchItems();
+        axios.put(`http://localhost:5000/items/${id}`, { name: newName })
+          .then(() => fetchItems()) // Asegúrate de actualizar la lista de elementos después de editar
+          .catch((error) => console.error('Error editing item:', error));
       } catch (error) {
         console.error('Error editing item:', error);
       }
@@ -119,13 +141,13 @@ const App = () => {
     try {
       const response = await axios.post('http://localhost:5000/login', { email: email });
       if (response.status === 200) {
-        setLoginMessage(response.data.message); // Actualizar el mensaje de inicio de sesión en el estado
+        showLoginMessage(response.data.message); // Mostrar el mensaje de inicio de sesión
         setIsLoggedIn(true);
         setIdUsers(response.data.idusers); // Almacena el id del usuario en el estado
         fetchItems();
       }
     } catch (error) {
-        setLoginMessage(error.response.data.message); // Actualizar el mensaje de error en caso de error de inicio de sesión
+        showLoginMessage(error.response.data.message); // Actualizar el mensaje de error en caso de error de inicio de sesión
         console.error(error.response.data.message);
     }
   };
@@ -136,6 +158,9 @@ const App = () => {
       console.log(response.data.message);
       setIsLoggedIn(false); // Establecer el estado isLoggedIn a false cuando se cierra sesión correctamente
       setItems([]); // Borrar la lista de elementos después de cerrar sesión
+      // Redirige al usuario a la página de inicio de sesión después del cierre de sesión
+      navigate('/login');
+      setEmail('');
     } catch (error) {
       console.error(error.response.data.message);
     }
@@ -163,11 +188,15 @@ const App = () => {
           <ul>
             {items.map((item) => (
               <li key={item.id}>
-                {item.id} - {item.name} by user: {item.itemiduser}
-                <button className='button-edit' onClick={() => handleEditItem(item.id)}>Edit</button>
-                <button onClick={() => handleDeleteItem(item.id)}>Delete</button>
+                {item.id} - {item.name} <div className='by-user'>by user: {email}</div>
+                <div className='li-buttons'>
+                  <button className='button-edit' onClick={() => handleEditItem(item.id)}>Edit</button>
+                  <button onClick={() => handleDeleteItem(item.id)}>Delete</button>
+                </div>
               </li>
             ))}
+
+
           </ul>
         </div>
       ) : (
@@ -182,9 +211,8 @@ const App = () => {
           <button onClick={handleRegister}>Registrar</button>
         </div>
       )}
-    <div>{loginMessage}</div>
-    <div>{registerMessage}</div>
-
+    <div className={`login-msg ${registerMessage ? 'visible' : ''}`}>{registerMessage}</div>
+    <div className={`login-msg ${loginMessage ? 'visible' : ''}`}>{loginMessage}</div>
     </div>
 
   );
