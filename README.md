@@ -1,8 +1,8 @@
-##Proyecto final de devCamp fullstack developer
+## Proyecto final de devCamp fullstack developer
 
-#Explicación
+# Explicación
 
-El proyecto actual busca cumplir los requerimientos de: autenticación, operaciones CRUD y Search Bar.
+El proyecto actual busca cumplir los requerimientos de: `autenticación`, `operaciones CRUD` y `Search Bar`.
 
 
 
