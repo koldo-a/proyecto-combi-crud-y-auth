@@ -1,3 +1,13 @@
+##Proyecto final de devCamp fullstack developer
+
+#Explicación
+
+El proyecto actual busca cumplir los requerimientos de: autenticación, operaciones CRUD y Search Bar.
+
+
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
