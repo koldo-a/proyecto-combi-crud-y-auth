@@ -17,6 +17,8 @@ const App = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
 
+  const API_URL = process.env.REACT_APP_API_URL;
+
 
 
   const showLoginMessage = (message) => {
@@ -37,7 +39,7 @@ const App = () => {
 
   const handleLogin = async () => {
   try {
-    const response = await axios.post('http://localhost:5000/login', { email: email });
+    const response = await axios.post(`${API_URL}/login`, { email: email });
     if (response.status === 200) {
       console.log(response.status);
       showLoginMessage(response.data.message); 
@@ -53,7 +55,7 @@ const App = () => {
 
   const handleLogout = async () => {
   try {
-    const response = await axios.get('http://localhost:5000/logout');
+    const response = await axios.get(`${API_URL}/logout`);
     console.log(response.data.message);
     setIsLoggedIn(false); 
     setItems([]); 
@@ -67,7 +69,7 @@ const App = () => {
 
   const handleRegister = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/register', { email: email });
+      const response = await axios.post(`${API_URL}/register`, { email: email });
       if (response.status === 200) {
         showregisterMessage(response.data.message);
         setEmail('');
@@ -87,21 +89,24 @@ const App = () => {
 
   const fetchItems = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/items');
-      const filteredItems = response.data.filter(item => item.itemiduser === idusers);
-      
-      if (searchTerm) {
-        const lowercasedSearchTerm = searchTerm.toLowerCase();
-        setItems(filteredItems.filter(item => item.name.toLowerCase().includes(lowercasedSearchTerm)));
-      } else {
-        setItems(filteredItems);
-      }
+      const response = await axios.get(`${API_URL}/items`);
+      setItems(response.data.filter(item => item.itemiduser === idusers));
+      console.log(response.data);
+      console.log(email)
     } catch (error) {
       console.error('Error fetching items:', error);
     }
   };
-  
 
+  const handleSearch = () => {
+    if (searchTerm) {
+      const lowercasedSearchTerm = searchTerm.toLowerCase();
+      setItems(items.filter(item => item.name.toLowerCase().includes(lowercasedSearchTerm)));
+    } else {
+      fetchItems(); // Volver a obtener todos los elementos si no hay término de búsqueda
+    }
+  };
+  
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
     setSearchTerm(e.target.value);
@@ -110,10 +115,11 @@ const App = () => {
   const handleAddItem = async () => {
     if (inputValue) {
       try {
-        const response = await axios.post('http://localhost:5000/items', { name: inputValue, itemiduser: idusers });
+        const response = await axios.post(`${API_URL}/items`, { name: inputValue, itemiduser: idusers });
         setInputValue('');
         fetchItems();
         console.log(response.data.message);
+        console.log(items);
       } catch (error) {
         console.error('Error adding item:', error);
       }
@@ -124,7 +130,7 @@ const App = () => {
     const newName = prompt('Enter the new name');
     if (newName) {
       try {
-        axios.put(`http://localhost:5000/items/${id}`, { name: newName })
+        axios.put(`${API_URL}/items/${id}`, { name: newName })
           .then(() => fetchItems()) 
           .catch((error) => console.error('Error editing item:', error));
       } catch (error) {
@@ -135,7 +141,7 @@ const App = () => {
 
   const handleDeleteItem = async (id) => {
     try {
-      const response = await axios.delete(`http://localhost:5000/items/${id}`);
+      const response = await axios.delete(`${API_URL}/items/${id}`);
       fetchItems();
       console.log(response.data.message);
     } catch (error) {
@@ -166,7 +172,7 @@ const App = () => {
             />
             <button onClick={handleAddItem}>{editMode ? 'Save' : 'Add'}</button>
             
-            <button onClick={fetchItems}>Search</button>
+            <button onClick={handleSearch}>Search</button>
          </div>
           <ul className='listado-items'>
             {items.map((item) => (

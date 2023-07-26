@@ -1,18 +1,27 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import mysql.connector
+import os 
+from dotenv import load_dotenv
 
+load_dotenv = ()
 
 app = Flask(__name__)
 CORS(app)
 
-# Configura la conexión a la base de datos MySQL
+db_host = os.environ.get('DB_HOST') or '127.0.0.1'
+db_port = os.environ.get('DB_PORT') or '3306'
+db_user = os.environ.get('DB_USER') or 'root'
+db_password = os.environ.get('DB_PASSWORD') or 'estibaliZ1.'
+db_name = os.environ.get('DB_NAME') or 'fullstack_bottega'
+
+# Configura la conexión a la base de datos MySQL utilizando las variables
 db = mysql.connector.connect(
-    host='127.0.0.1',
-    port='3306',
-    user='root',
-    password='estibaliZ1.',
-    database='fullstack_bottega'
+    host=db_host,
+    port=db_port,
+    user=db_user,
+    password=db_password,
+    database=db_name
 )
 
 # Ruta para el registro de usuarios
