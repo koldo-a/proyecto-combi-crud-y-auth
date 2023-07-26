@@ -15,6 +15,8 @@ const App = () => {
   const [loginMessage, setLoginMessage] = useState('');
   const [registerMessage, setregisterMessage] = useState('');
   const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState('');
+
 
 
   const showLoginMessage = (message) => {
@@ -76,25 +78,33 @@ const App = () => {
     }
   };
 
-  useEffect(() => {
+    useEffect(() => {
     if (idusers !== null) {
       fetchItems();
     }
-  }, [idusers]);
+  // eslint-disable-next-line
+  }, [idusers]); 
 
   const fetchItems = async () => {
     try {
       const response = await axios.get('http://localhost:5000/items');
-      setItems(response.data.filter(item => item.itemiduser === idusers));
-      console.log(response.data);
-      console.log(email)
+      const filteredItems = response.data.filter(item => item.itemiduser === idusers);
+      
+      if (searchTerm) {
+        const lowercasedSearchTerm = searchTerm.toLowerCase();
+        setItems(filteredItems.filter(item => item.name.toLowerCase().includes(lowercasedSearchTerm)));
+      } else {
+        setItems(filteredItems);
+      }
     } catch (error) {
       console.error('Error fetching items:', error);
     }
-  };  
+  };
+  
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
+    setSearchTerm(e.target.value);
   };
 
   const handleAddItem = async () => {
@@ -145,7 +155,7 @@ const App = () => {
         <div className='container'>
           <div className='container-heading'>
             <p>Bienvenido <b>{email}</b>! Estás autenticado.</p>
-            <button className='cerrar-button' onClick={handleLogout}>Cerrar sesión</button>
+            <button className='cerrar-button' onClick={handleLogout}>Logout</button>
           </div>
           <div className='subcontainer'>
             <input
@@ -155,9 +165,9 @@ const App = () => {
               placeholder="Enter an item"
             />
             <button onClick={handleAddItem}>{editMode ? 'Save' : 'Add'}</button>
-
-            <button onClick={fetchItems}>Read from Database</button>
-          </div>
+            
+            <button onClick={fetchItems}>Search</button>
+         </div>
           <ul className='listado-items'>
             {items.map((item) => (
               <li key={item.id}>
@@ -181,8 +191,8 @@ const App = () => {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Correo electrónico"
           />
-          <button onClick={handleLogin}>Iniciar sesión</button>
-          <button onClick={handleRegister}>Registrar</button>
+          <button onClick={handleLogin}>Login</button>
+          <button onClick={handleRegister}>Register</button>
         </div>
       )}
 
