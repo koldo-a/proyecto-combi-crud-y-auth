@@ -1,10 +1,20 @@
+@import './home.scss';
+
 // Estilos generales
 body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #f0f0f0;
+  background-color: #000000;
 }
+
+.login {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 
 .titulo {
   font-size: 24px;
@@ -17,9 +27,18 @@ body {
   
 }
 .container {
-  max-width: 600px;
+  width: 80%;
   margin: 0 auto;
   padding: 20px;
+  background-color: #fff;
+
+  }
+
+.container1 {
+  background-color: black;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .subcontainer {
@@ -30,10 +49,22 @@ body {
   padding: 20px;
 }
 
+.container-heading {
+  display: flex;
+  justify-content: center;
+
+  p {
+    margin-right: 20px;
+  }
+
+}
+
 input[type="text"] {
-  width: 30%;
+  width: 80%;
+  max-width: 600px;
+  border-radius: 5px;
+  margin-right: 10px;
   padding: 10px;
-  margin-bottom: 10px;
   font-size: 16px;
   &:hover {
     border: 2px solid #002fff;
@@ -44,6 +75,7 @@ input[type="text"] {
 button {
   background-color: #4caf50;
   color: #fff;
+  border-radius: 5px;
   border: 1px solid black;
   padding: 10px 20px;
   font-size: 16px;
@@ -60,21 +92,14 @@ ul {
 }
 
 li {
-  background-color: #fff;
+  background-color: #e0e0e0;
+  border-radius: 15px;
   padding: 10px;
   margin-bottom: 10px;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
   align-items: center;
-}
-
-.by-user {
-  color: #002fff;
-  font-size: small;
-}
-
-li button {
-  margin-left: 10px;
+  text-align: justify;
 }
 
 li button:hover {
@@ -87,7 +112,7 @@ li button:hover {
 // Otros estilos personalizados aquí
 
 .login-msg {
-  font-size: 2em;
+  font-size: 1em;
   margin-top: 40px;
   color: rgb(161, 16, 16);
   opacity: 1; /* Inicialmente, el mensaje no es visible */
@@ -99,7 +124,7 @@ li button:hover {
 }
 
 .regis-msg {
-  font-size: 2em;
+  font-size: 1em;
   margin-top: 40px;
   color: rgb(161, 16, 16);
   opacity: 1; /* Inicialmente, el mensaje no es visible */
@@ -108,4 +133,110 @@ li button:hover {
 
 .regis-msg.visible {
   opacity: 0; /* Cuando la clase "visible" está presente, se mostrará el mensaje con una animación de desvanecimiento */
+}
+
+.messages {
+  display: flex;
+  justify-content: center;
+  font-weight: 800;
+}
+
+.author {
+  display: flex;
+  justify-content: center;
+  height: 200px;
+  align-items: center;
+  color: rgb(48, 50, 177);
+
+  a {
+    text-decoration: none;
+    color: rgb(88, 90, 230);
+    font-weight: 800;
+  }
+}
+
+
+/* Media query for mobile devices with max-width 768px */
+@media (max-width: 900px) {
+  .login {
+    flex-direction: column;
+ 
+    input[type="text"] {
+      margin-bottom: 15px;
+      height: 40px;
+    }
+  
+    button {
+      border-radius: 10px;
+      margin-bottom: 5px;
+    }
+  }
+
+  li {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    max-width: 90%;
+    justify-content: center;
+    align-items: center;
+
+    button {
+      width: 100%;
+    }
+
+  }
+
+  .li-buttons {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .listado-items {
+    display: flex;
+    flex-direction: column;
+  }
+  .container {
+    margin: 0 auto;
+    padding: 20px;  
+    }
+  
+  .container-heading {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .listado-items {
+    font-size: small;
+  }
+
+  .texto-li {
+    text-align: justify;
+    width: 90%;
+  }
+
+  .subcontainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+
+    input {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    button {
+      width: 50%;
+      margin-bottom: 10px;
+    }
+
+  }
+
+  .button-edit {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
 }
