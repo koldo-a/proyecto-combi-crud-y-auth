@@ -8,7 +8,7 @@ frontend:
 backend:
   commands:
     - pip install -r backend/requirements.txt  # Instala las dependencias del backend
-    - python backend/app.py  # Ejecuta tu servidor backend
+    - python backend/main.py  # Ejecuta tu servidor backend
 
 # Define las variables de entorno requeridas por tu aplicación
 env:
