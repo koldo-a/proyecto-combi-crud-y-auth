@@ -1,0 +1,27 @@
+name: proyecto-combi-crud-y-auth
+
+frontend:
+  commands:
+    - npm install --prefix frontend  # Instala las dependencias del frontend
+    - npm run build --prefix frontend  # Construye la versión optimizada del frontend
+
+backend:
+  commands:
+    - pip install -r backend/requirements.txt  # Instala las dependencias del backend
+    - python backend/app.py  # Ejecuta tu servidor backend
+
+# Define las variables de entorno requeridas por tu aplicación
+env:
+  MYSQL_URL: mysql://root:zhoPK0ZW71uMv9BX3RBV@containers-us-west-113.railway.app:6932/railway
+  DB_HOST: containers-us-west-113.railway.app
+  DB_PORT: 6932
+  DB_USER: root
+  DB_PASSWORD: zhoPK0ZW71uMv9BX3RBV
+  DB_NAME: railway
+
+# Otras configuraciones opcionales según tus necesidades
+build:
+  frontend: frontend/build  # Ruta de la carpeta de compilación del frontend
+  backend: backend  # Ruta de la carpeta del backend
+
+# Define cualquier configuración adicional que puedas necesitar
